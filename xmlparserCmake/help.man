@@ -1,0 +1,32 @@
+	[-h || --help]  [--id=<value>] [--key=<value>] [-nod || --nodraft] 
+	[-nodep || --not_deprecated]  [-a || --all]
+
+OPTIONS
+        -h, --help          		display this help manual
+        --id=<value>    		input a number value to retrieve and display a single CC item
+	--key=<value>           	search for a single keyword in definition
+	--key="<value1> <value2>"      	search for multiple keywords in definition
+	--index="<value>"		search for an an index by reference creator			
+        -a, --all              		format display showing ALL data retrieved from file 
+					default is a simple list containing all information
+	-nod, --not_draft		do NOT display draft items
+        -nodep, --not_deprecated      	do NOT display deprecated items
+	-l, --liscense			display licensing information
+        
+DEFAULT File name is U_CCI_List.xml
+EXCLUDING the file name will attempt to use the default.
+
+EXAMPLE
+        xmlparser U_CCI_List.xml --id=3
+
+OUTPUT
+        Version 2022 - 03 - 09
+        Publish Date 2022 - 03 - 09
+        CCI Item ID : CCI - 000003               Status:draft
+        Contributor : DISA                       Date:2022-03-01
+        Review and update the current access control policy for organization - defined frequency.
+
+        References : NISTNIST SP 800 - 53 Revision 4 (v4) : AC - 1 a 1
+        NISTNIST SP 800 - 53A(v1) : AC - 1.1 (i and ii)
+        NISTNIST SP 800 - 53 (v3) : AC - 1 a
+        NISTNIST SP 800 - 53 Revision 4 (v4) : AC - 1 a 1

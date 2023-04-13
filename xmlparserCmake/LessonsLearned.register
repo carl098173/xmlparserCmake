@@ -1,0 +1,35 @@
+Lessons Learned Register:
+
+Splitting Program code into multiple .cpp files.  
+Do this based on each method used (ie- parse/search) to make code more granular and readable.
+Less definitions will be required on main.cpp
+
+Optimization:
+Minor:
+Struct has less memory usage than class object.
+Major:
+The code was written in two different ways during building.
+In one method, all of the data was parsed into one vector of objects.
+This vector of objects contained another vector of structs that contained "references".
+This method was used because it was the most human readable and makes logical sense.
+The other method used was using two seperate vectors.
+Both vectors contained structs of predefined variables.
+The second vector was referenced through a key index stored in the first vector.
+Results of parsing data using method 1: elapsed time: 172.46s
+Results of parsing data using method 2: elapsed time: 2.473s
+Using the second method improved performance time by 6873.72%
+Elegance != Performance
+
+Skill Lessons:
+Visual Studio Linker settings for non-standard header files.
+	Property Pages => c/c++ => General => Additional Include Directories => Double-click
+		/include directory containing .h files
+		*** make sure to click checkbox "Inherit from parent or project defaults"
+	Linker => General => Additional Library Directories => double-click
+		/libs directory containing .lib files
+		*** make sure to click checkbox "Inherit from parent or project defaults"
+Using Python.h to embed python script into c++ code.
+Passing command-line arguments using Visual Studio
+	Property Pages => Configuration Properties => Debugging => Command Arguments
+	
+	
