@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <conio.h>
 #include <Python.h>
 #include <filesystem>
 #include <iostream>
@@ -22,7 +21,8 @@ void ExecutePythonScript()
     const char* script = "dl.py";
     // Load and execute the Python script
     FILE* file;
-    if (fopen_s(&file, script, "r") == 0) 
+if ((file = fopen(script, "r")) != NULL)
+
     {
         PyRun_SimpleFile(file, script);
         fclose(file);

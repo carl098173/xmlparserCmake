@@ -29,6 +29,7 @@ IN THE SOFTWARE.
 #include <iomanip>
 #include <stdlib.h>
 #include <algorithm>
+#include <cmath>
 
 #pragma warning(disable : 4996)
 #include <chrono>
@@ -111,7 +112,8 @@ int main(int argc, char* argv[])
     {
         DownloadFile(fileExistsFlag);
         CleanUpCache();
-        system("PAUSE");
+        printf("Press any key to continue...");
+        getchar();
     }
 
 
@@ -177,7 +179,8 @@ int main(int argc, char* argv[])
         std::cout << "finished computation at " << std::ctime(&end_time)
             << "elapsed time: " << elapsed_seconds.count() << "s"
             << std::endl;
-        system("PAUSE");
+        printf("Press any key to continue...");
+        getchar();
         // testing for optimization 
 
         while (endProgram == false)     // main program process, no command line arguments
@@ -195,7 +198,8 @@ int main(int argc, char* argv[])
             {
                 displayProgramTag();
                 findByDate(xml, references, version, publishDate, inputXml, IdCollection, findByDateHelper(inputXml));
-                std::system("PAUSE");
+                printf("Press any key to continue...");
+                getchar();
                 break;
             }
 
@@ -205,7 +209,8 @@ int main(int argc, char* argv[])
                 std::cout << "Using file: " << inputXml << std::endl;
                 keyWordSearch(xml, references, version, publishDate, inputXml, keyWordSearchHelper(), IdCollection, draftFlag, depFlag);
                 printID(IdCollection);
-                std::system("PAUSE");
+                printf("Press any key to continue...");
+                getchar();
                 break;
             }
             case 4:                     // 4.) Search by index.
@@ -213,8 +218,9 @@ int main(int argc, char* argv[])
                 displayProgramTag();
                 std::cout << "Using file: " << inputXml << std::endl;
                 findByIndex(xml, references, version, publishDate, inputXml, findByIndexHelper(), IdCollection, draftFlag, depFlag);
-                printID(IdCollection);
-                std::system("PAUSE");
+                printID(IdCollection);        
+                printf("Press any key to continue...");
+                getchar();
                 break;
             }
             case 5:                     // 5.) Display all entries.
@@ -222,8 +228,8 @@ int main(int argc, char* argv[])
                 displayProgramTag();
                 std::cout << "Using file: " << inputXml << std::endl;
                 displayAll(xml, references, version, publishDate, inputXml);
-                std::system("PAUSE");
-                break;
+                printf("Press any key to continue...");
+                getchar();break;
             }
             case 6:                     // 6.) Quit
             {
@@ -233,7 +239,8 @@ int main(int argc, char* argv[])
             default:
             {
                 std::cout << "Invalid entry.";
-                std::system("PAUSE");
+                printf("Press any key to continue...");
+                getchar();
                 break;
             }
 
@@ -241,8 +248,8 @@ int main(int argc, char* argv[])
             IdCollection.clear();
         }   // end while loop
         std::cout << "Goodbye..." << std::endl;
-        std::system("PAUSE");
-
+        printf("Press any key to continue...");
+        getchar();
     }       // end program with no added arguments
 
 }
@@ -377,7 +384,8 @@ bool loadXmlMenu(std::string& inputXml, std::ifstream& inputStream)     // helpe
         if (inputXml[0] == 'q' || inputXml[0] == 'Q')  // check to see if loop should quit
         {
             std::cout << "Goodbye..." << std::endl;
-            std::system("PAUSE");
+            printf("Press any key to continue...");
+            getchar();
             successfulLoad = false;
             break;
         }
@@ -723,7 +731,8 @@ void displayById(std::vector<cci_items>& xml, std::vector<references>& ref, std:
 
     if (found == false)             // did not find the cci item
         std::cout << "Entry does not exist." << std::endl;
-    std::system("PAUSE");
+        printf("Press any key to continue...");
+        getchar();
 }
 
 int mainMenu()
