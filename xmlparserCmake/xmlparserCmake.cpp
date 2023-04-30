@@ -62,19 +62,19 @@ void displayById_IdCollection(std::vector<cci_items>& xml, std::vector<reference
 void collectFlags(int argc, char* argv[], bool& endProgram, bool& allFlag, bool& depFlag, bool& draftFlag, long& id, std::string& inputXml, std::string& searchTerm, std::string& indexSearchTerm);
 bool loadXml(std::string& inputXml, std::ifstream& inputStream); // loads xml into filestream
 void parseXml(std::ifstream& inputStream, std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub);  // parses xml from filestream into memory
-void displayAll(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName);  // ALL output spit onto screen
-void displayById(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, long id); // type in a cc item id and print out only that selection
+void displayAll(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, bool& depFlag, bool& draftFlag);  // ALL output spit onto screen
+void displayById(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, long id, bool& depFlag, bool& draftFlag); // type in a cc item id and print out only that selection
 long displayByIdGetInput();      // get user input for displayById function
 int mainMenu(); // main menu helper
 void displayProgramTag(); // creates a tag at the top of the screen telling the name of the program
 bool checkNumber(std::string str);  // return true if is a number and no alphabet/special characters
-void findByDate(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::vector<std::string>& IdCollection, std::string date); //Search CCI items by publish date.
+void findByDate(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::vector<std::string>& IdCollection, std::string date, bool& depFlag, bool& draftFlag); //Search CCI items by publish date.
 std::string findByDateHelper(std::string fileName);  // gets user input for date
 std::string keyWordSearchHelper(); // gets user input for keyWordSearch
-void keyWordSearch(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::string keyword, std::vector<std::string>& IdCollection, bool draft, bool dep); //Searches CCI items by node description
+void keyWordSearch(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::string keyword, std::vector<std::string>& IdCollection, bool& depFlag, bool& draftFlag); //Searches CCI items by node description
 void printID(std::vector<std::string>& IdCollection);  // prints CCI ids and formats them in rows and columns, ordered by columns
 std::string findByIndexHelper(); // gets user input for findByIndex
-void findByIndex(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::string index, std::vector<std::string>& IdCollection, bool draft, bool dep); // Searches reference tags for a specific index
+void findByIndex(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::string index, std::vector<std::string>& IdCollection, bool& depFlag, bool& draftFlag); // Searches reference tags for a specific index
 void printFixedLine();      // prints a single fixed witdth break line
 void helpMenu(std::vector<std::string>& arguments);            // prints help menu for command line arguments
 bool loadXmlMenu(std::string& inputXml, std::ifstream& inputStream);     // helper function to obtain filename from user data
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
     {
         DownloadFile(fileExistsFlag);
         CleanUpCache();
-        printf("Press any key to continue...");
+        printf("Press enter key to continue...");
         getchar();
     }
 
@@ -125,15 +125,15 @@ int main(int argc, char* argv[])
             if (loadXml(inputXml, inputStream))        //load xml into filestream
             {
                 parseXml(inputStream, xml, references, version, publishDate);   // function will parse selected xml
-
+            
                 if (id != -100)
                 {
-                    displayById(xml, references, version, publishDate, inputXml, id);
+                    displayById(xml, references, version, publishDate, inputXml, id, depFlag, draftFlag);
                     return 0;
                 }
                 else if (searchTerm != "")      // search by index if searchTerm is blank
                 {
-                    keyWordSearch(xml, references, version, publishDate, inputXml, searchTerm, IdCollection, draftFlag, depFlag);
+                    keyWordSearch(xml, references, version, publishDate, inputXml, searchTerm, IdCollection, depFlag, draftFlag);
                     if (!allFlag)
                         printID(IdCollection);
                     else
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
                 }
                 else if (indexSearchTerm != "")     // search by index if indexSearchTerm is blank
                 {
-                    findByIndex(xml, references, version, publishDate, inputXml, indexSearchTerm, IdCollection, draftFlag, depFlag);
+                    findByIndex(xml, references, version, publishDate, inputXml, indexSearchTerm, IdCollection, depFlag, draftFlag);
                     if (!allFlag)
                         printID(IdCollection);
                     else
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
         std::cout << "finished computation at " << std::ctime(&end_time)
             << "elapsed time: " << elapsed_seconds.count() << "s"
             << std::endl;
-        printf("Press any key to continue...");
+        printf("Press enter key to continue...");
         getchar();
         // testing for optimization 
 
@@ -190,15 +190,16 @@ int main(int argc, char* argv[])
             case 1:                     // 1.) Select item by CCI Item Id
             {
                 displayProgramTag();
-                displayById(xml, references, version, publishDate, inputXml, displayByIdGetInput());
+                displayById(xml, references, version, publishDate, inputXml, displayByIdGetInput(), depFlag, draftFlag);
                 break;
             }
 
             case 2:                     // 2.) Search CCI items by publish date.
             {
                 displayProgramTag();
-                findByDate(xml, references, version, publishDate, inputXml, IdCollection, findByDateHelper(inputXml));
-                printf("Press any key to continue...");
+                findByDate(xml, references, version, publishDate, inputXml, IdCollection, findByDateHelper(inputXml), depFlag, draftFlag);
+                printID(IdCollection);
+                printf("Press enter key to continue...");
                 getchar();
                 break;
             }
@@ -207,9 +208,9 @@ int main(int argc, char* argv[])
             {
                 displayProgramTag();
                 std::cout << "Using file: " << inputXml << std::endl;
-                keyWordSearch(xml, references, version, publishDate, inputXml, keyWordSearchHelper(), IdCollection, draftFlag, depFlag);
+                keyWordSearch(xml, references, version, publishDate, inputXml, keyWordSearchHelper(), IdCollection, depFlag, draftFlag);
                 printID(IdCollection);
-                printf("Press any key to continue...");
+                printf("Press enter key to continue...");
                 getchar();
                 break;
             }
@@ -217,9 +218,9 @@ int main(int argc, char* argv[])
             {
                 displayProgramTag();
                 std::cout << "Using file: " << inputXml << std::endl;
-                findByIndex(xml, references, version, publishDate, inputXml, findByIndexHelper(), IdCollection, draftFlag, depFlag);
+                findByIndex(xml, references, version, publishDate, inputXml, findByIndexHelper(), IdCollection, depFlag, draftFlag);
                 printID(IdCollection);        
-                printf("Press any key to continue...");
+                printf("Press enter key to continue...");
                 getchar();
                 break;
             }
@@ -227,8 +228,8 @@ int main(int argc, char* argv[])
             {
                 displayProgramTag();
                 std::cout << "Using file: " << inputXml << std::endl;
-                displayAll(xml, references, version, publishDate, inputXml);
-                printf("Press any key to continue...");
+                displayAll(xml, references, version, publishDate, inputXml, depFlag, draftFlag);
+                printf("Press enter key to continue...");
                 getchar();break;
             }
             case 6:                     // 6.) Quit
@@ -239,7 +240,7 @@ int main(int argc, char* argv[])
             default:
             {
                 std::cout << "Invalid entry.";
-                printf("Press any key to continue...");
+                printf("Press enter key to continue...");
                 getchar();
                 break;
             }
@@ -248,7 +249,7 @@ int main(int argc, char* argv[])
             IdCollection.clear();
         }   // end while loop
         std::cout << "Goodbye..." << std::endl;
-        printf("Press any key to continue...");
+        printf("Press enter key to continue...");
         getchar();
     }       // end program with no added arguments
 
@@ -259,6 +260,7 @@ void collectFlags(int argc, char* argv[], bool& endProgram, bool& allFlag, bool&
     //////////// FLAG LIST
     // status = false; endProgram = false; allFlag = false; depFlag = false;
     // draftFlag = false;
+	/////////////////
     std::size_t xmlFound, idFound, keyFound, indexFound;
 
     std::vector<std::string> arguments;         // collected command-line arguments
@@ -270,7 +272,6 @@ void collectFlags(int argc, char* argv[], bool& endProgram, bool& allFlag, bool&
 
     for (auto& arg : arguments) // collect all of the valid arguments
     {
-        //            found = arg.find(".xml");
         xmlFound = arg.find(".xml");
         idFound = arg.find("--id=");
         keyFound = arg.find("--key=");
@@ -384,7 +385,7 @@ bool loadXmlMenu(std::string& inputXml, std::ifstream& inputStream)     // helpe
         if (inputXml[0] == 'q' || inputXml[0] == 'Q')  // check to see if loop should quit
         {
             std::cout << "Goodbye..." << std::endl;
-            printf("Press any key to continue...");
+            printf("Press enter key to continue...");
             getchar();
             successfulLoad = false;
             break;
@@ -690,7 +691,7 @@ void displayById_IdCollection(std::vector<cci_items>& xml, std::vector<reference
     }
 }
 
-void displayById(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, long id)
+void displayById(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, long id, bool& draftFlag, bool& depFlag)
 {
 
     bool found = false;
@@ -701,6 +702,12 @@ void displayById(std::vector<cci_items>& xml, std::vector<references>& ref, std:
         {
             if (id == a.id)
             {
+                if (draftFlag)
+                    if (a.status == "draft")
+                        break;
+                if (depFlag)
+                    if (a.status == "deprecated")
+                        break;
                 std::cout << "Using file \"" << fileName << "\"" << std::endl;
                 found = true;
                 std::cout << "Version " << ver << std::endl;
@@ -729,9 +736,10 @@ void displayById(std::vector<cci_items>& xml, std::vector<references>& ref, std:
     }
 
 
+
     if (found == false)             // did not find the cci item
         std::cout << "Entry does not exist." << std::endl;
-        printf("Press any key to continue...");
+        printf("Press enter key to continue...");
         getchar();
 }
 
@@ -791,7 +799,7 @@ void displayProgramTag()
     printFixedLine();
 }
 
-void displayAll(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName)
+void displayAll(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, bool& depFlag, bool& draftFlag)
 {
     std::cout << "Using file \"" << fileName << "\"" << std::endl;
     std::cout << "Version " << ver << std::endl;
@@ -931,7 +939,7 @@ std::string findByDateHelper(std::string fileName)
     return date;
 }
 
-void findByDate(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::vector<std::string>& IdCollection, std::string date)
+void findByDate(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::vector<std::string>& IdCollection, std::string date, bool& depFlag, bool& draftFlag)
 {
     std::size_t found;      // can store the maximum size of a theoretically possible object of any type -- used for testing
     bool dateFound = false;
@@ -945,6 +953,12 @@ void findByDate(std::vector<cci_items>& xml, std::vector<references>& ref, std::
         found = a.date.find(date);      // test to see if this holds "version="
         if (found != std::string::npos)         // if (true) ...
         {
+			if (draftFlag)
+                if (a.status == "draft")
+                    break;
+            if (depFlag)
+                if (a.status == "deprecated")
+                    break;
             dateFound = true;
             tempID = std::to_string(a.id);
             while (tempID.length() < 6)          // 6 is CCI-XXXXXX
@@ -974,7 +988,7 @@ std::string keyWordSearchHelper()
     return keyword;
 }
 
-void keyWordSearch(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::string keyword, std::vector<std::string>& IdCollection, bool draft, bool dep)
+void keyWordSearch(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::string keyword, std::vector<std::string>& IdCollection, bool& depFlag, bool& draftFlag)
 {
 
     std::size_t found;      // can store the maximum size of a theoretically possible object of any type -- used for testing
@@ -992,22 +1006,29 @@ void keyWordSearch(std::vector<cci_items>& xml, std::vector<references>& ref, st
         found = tempString.find(toUpper(keyword));      // test to see if this holds "version="
         if (found != std::string::npos)         // if (true) ...
         {
-            keywordFound = true;
-            tempID = std::to_string(a.id);
-            while (tempID.length() < 6)          // 6 is CCI-XXXXXX
+			if ((depFlag && a.status == "deprecated") || (draftFlag && a.status == "draft"))
             {
-                tempID.insert(0, "0");          // adds preceding zeros
-            }
-            tempID.insert(0, "CCI-");
-            if (IdCollection.size() == 0)       // add if this is the first element
-                IdCollection.push_back(tempID); // add this item to tempID
-            else if (IdCollection.back() == tempID) // do not add if the new element is the same as the last
-            {
-                // do nothing
+                // do nothing because one of the items is flagged
             }
             else
             {
-                IdCollection.push_back(tempID); // add this item to tempID
+                keywordFound = true;
+                tempID = std::to_string(a.id);
+                while (tempID.length() < 6)          // 6 is CCI-XXXXXX
+                {
+                    tempID.insert(0, "0");          // adds preceding zeros
+                }
+                tempID.insert(0, "CCI-");
+                if (IdCollection.size() == 0)       // add if this is the first element
+                    IdCollection.push_back(tempID); // add this item to tempID
+                else if (IdCollection.back() == tempID) // do not add if the new element is the same as the last
+                {
+                    // do nothing
+                }
+                else
+                {
+                    IdCollection.push_back(tempID); // add this item to tempID
+                }
             }
         }
     }
@@ -1048,7 +1069,7 @@ std::string findByIndexHelper()
     return index;
 }
 
-void findByIndex(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::string index, std::vector<std::string>& IdCollection, bool draft, bool dep)
+void findByIndex(std::vector<cci_items>& xml, std::vector<references>& ref, std::string& ver, std::string& pub, std::string fileName, std::string index, std::vector<std::string>& IdCollection, bool& draftFlag, bool& depFlag)
 {
     std::string tempString = "";
     std::size_t found;      // can store the maximum size of a theoretically possible object of any type -- used for testing
@@ -1072,7 +1093,7 @@ void findByIndex(std::vector<cci_items>& xml, std::vector<references>& ref, std:
                 {
                     if (xml[x].refIndex[y] == i)
                     {
-                        if ((dep && xml[x].status == "deprecated") || (draft && xml[x].status == "draft"))
+                        if ((depFlag && xml[x].status == "deprecated") || (draftFlag && xml[x].status == "draft"))
                         {
                             // do nothing because one of the items is flagged
                         }

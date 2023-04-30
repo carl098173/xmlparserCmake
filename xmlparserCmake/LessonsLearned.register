@@ -31,5 +31,6 @@ Visual Studio Linker settings for non-standard header files.
 Using Python.h to embed python script into c++ code.
 Passing command-line arguments using Visual Studio
 	Property Pages => Configuration Properties => Debugging => Command Arguments
+Cross-platform support.  Building CMake projects and compiling on Linux operating systems.
 	
 	
