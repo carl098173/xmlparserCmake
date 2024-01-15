@@ -26,15 +26,23 @@ The project is designed to be cross-platform, supporting both Windows and Linux.
     ```
 2. Create a build directory and navigate into it:
 
+    ```bash
    cd xml-file-parser
    mkdir build
    cd build
+    ```
 
 3. Generate the build files using CMake:
-   cmake ..
 
-4. Build the project:
+    ```bash
+   cmake ..
+    ```
+
+5. Build the project:
+
+    ```bash
    make
+    ```
 
 ## Usage
 
